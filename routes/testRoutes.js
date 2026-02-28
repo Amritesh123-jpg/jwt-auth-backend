@@ -1,11 +1,14 @@
 const express = require('express');
+const { protect } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/',(req,res)=>{
-  res.send('test route  working');
-  console.log('all okk buddy');
+router.get('/', protect, (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Protected route working',
+    user: req.user
+  });
 });
-// console.log('test route working');
 
 module.exports = router;
