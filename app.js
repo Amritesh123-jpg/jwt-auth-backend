@@ -6,9 +6,10 @@ app.use(express.json());
 
 
 
-//app.use('/test',testRoutes);
+
 
 app.use('/auth',authRoute);
+app.use('/test',testRoutes);
 console.log('app.js working');
 
 module.exports = app; 
