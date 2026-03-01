@@ -1,19 +1,18 @@
-const User = require('../model/userModel');
-const bcrypt = require('bcryptjs');
+const User = require("../model/userModel");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const signToken = require("../utils/signToken");
 
 /* ===============================
    JWT TOKEN GENERATOR
 ================================ */
-const signToken = (id) => {
-  return jwt.sign(
-    { id },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXPIRES_IN
-    }
-  );
-};
+// const signToken = (id,role) => {
+//   return jwt.sign(
+//     { id,role },
+//      process.env.JWT_SECRET, {
+//     expiresIn: process.env.JWT_EXPIRES_IN,
+//   });
+// };
 
 /* ===============================
    SIGNUP
@@ -26,27 +25,27 @@ exports.signUp = async (req, res) => {
       name,
       email,
       password,
-      passwordConfirm
+      passwordConfirm,
+      
     });
 
     // 🔐 token generate
-    const token = signToken(user._id);
+    const token = signToken(user._id,user.role);
 
     // password response me mat bhejo
     user.password = undefined;
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       token,
       data: {
-        user
-      }
+        user,
+      },
     });
-
   } catch (err) {
     res.status(400).json({
-      status: 'fail',
-      message: err.message
+      status: "fail",
+      message: err.message,
     });
   }
 };
@@ -61,8 +60,8 @@ exports.login = async (req, res) => {
     // 1️⃣ check email & password
     if (!email || !password) {
       return res.status(400).json({
-        status: 'fail',
-        message: "Please provide email and password"
+        status: "fail",
+        message: "Please provide email and password",
       });
     }
 
@@ -73,22 +72,23 @@ exports.login = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({
         status: "fail",
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
     // 🔐 token generate
-    const token = signToken(user._id);
+    const token = signToken(user._id,user.role);
 
     res.status(200).json({
       status: "success",
-      token
+      token,
     });
-
   } catch (err) {
     res.status(500).json({
       status: "error",
-      message: err.message
+      message: err.message,
     });
   }
+
+ 
 };
