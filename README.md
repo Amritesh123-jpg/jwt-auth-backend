@@ -1,8 +1,8 @@
-# 🔐 JWT Authentication Backend API
+# 🔐 JWT Authentication & Role-Based Authorization API
 
-A production-ready authentication system built using **Node.js, Express, MongoDB, and JSON Web Tokens (JWT)**.
+A production-ready authentication and authorization backend built using **Node.js, Express, MongoDB, and JSON Web Tokens (JWT)**.
 
-This backend implements secure user authentication with password hashing, token-based authorization, and protected route access control.
+This project implements secure user authentication, role-based access control (RBAC), protected routes, and secure password management following industry best practices.
 
 ---
 
@@ -16,14 +16,19 @@ https://jwt-auth-backend-58ws.onrender.com
 
 ## 🚀 Features
 
-- User Signup with password confirmation validation  
-- Secure password hashing using bcrypt  
-- JWT-based stateless authentication  
-- Protected routes using middleware  
-- MongoDB Atlas integration  
-- Environment variable configuration  
-- MVC-based folder structure  
-- Production deployment on Render  
+- User Signup with validation
+- Secure password hashing using bcrypt
+- JWT-based stateless authentication
+- Role-Based Access Control (Admin/User)
+- Middleware-based protected routes
+- Admin-only routes (view & delete users)
+- User profile update (safe field filtering)
+- Secure password update (with current password verification)
+- Self account deletion
+- MongoDB Atlas integration
+- Environment variable configuration
+- Clean MVC-based architecture
+- Production deployment on Render
 
 ---
 
@@ -45,7 +50,8 @@ https://jwt-auth-backend-58ws.onrender.com
 jwt-auth-backend/
 │
 ├── controller/
-│   └── authController.js
+│   ├── authController.js
+│   └── userController.js
 │
 ├── middlewares/
 │   └── authMiddleware.js
@@ -55,7 +61,11 @@ jwt-auth-backend/
 │
 ├── routes/
 │   ├── authRoute.js
+│   ├── userRoute.js
 │   └── testRoutes.js
+│
+├── utils/
+│   └── signToken.js
 │
 ├── app.js
 ├── server.js
@@ -104,13 +114,15 @@ http://localhost:3000
 
 ---
 
-## 🔑 API Endpoints
+# 🔑 API Endpoints
 
-### 🟢 Signup
+---
+
+## 🟢 Authentication Routes
+
+### Signup
 
 **POST** `/auth/signup`
-
-#### Request Body:
 
 ```json
 {
@@ -121,22 +133,11 @@ http://localhost:3000
 }
 ```
 
-#### Response:
-
-```json
-{
-  "status": "success",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
 ---
 
-### 🔵 Login
+### Login
 
 **POST** `/auth/login`
-
-#### Request Body:
 
 ```json
 {
@@ -145,18 +146,11 @@ http://localhost:3000
 }
 ```
 
-#### Response:
-
-```json
-{
-  "status": "success",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
+Returns a JWT token for authenticated access.
 
 ---
 
-### 🔐 Protected Route Example
+## 🔐 Protected Route Example
 
 **GET** `/test`
 
@@ -166,66 +160,128 @@ Requires header:
 Authorization: Bearer <your_token>
 ```
 
-#### Response:
+---
+
+# 👤 User Routes (Logged-in Users)
+
+All routes require authentication.
+
+---
+
+### Get Own Profile
+
+**GET** `/users/me`
+
+---
+
+### Update Profile
+
+**PATCH** `/users/update-me`
+
+Allowed fields:
+- name
+- email
+
+---
+
+### Update Password
+
+**PATCH** `/users/update-password`
 
 ```json
 {
-  "status": "success",
-  "message": "Protected route working",
-  "user": {
-    "_id": "...",
-    "name": "Amrit",
-    "email": "amrit@test.com"
-  }
+  "currentPassword": "oldpassword",
+  "newPassword": "newpassword",
+  "passwordConfirm": "newpassword"
 }
 ```
 
+✔ Verifies current password  
+✔ Hashes new password  
+✔ Generates new JWT  
+
 ---
 
-## 🔐 Security Implementation
+### Delete Own Account
+
+**DELETE** `/users/delete-me`
+
+---
+
+# 👑 Admin Routes (Admin Only)
+
+Requires:
+- Authentication
+- Role: `admin`
+
+---
+
+### Get All Users
+
+**GET** `/users`
+
+Returns all users with role `user`.
+
+---
+
+### Delete Any User
+
+**DELETE** `/users/:id`
+
+Allows admin to remove any user account.
+
+---
+
+# 🔐 Security Implementation
 
 - Password hashing using bcrypt (one-way encryption)
-- JWT token generation on successful login
+- JWT token generation with role embedded
 - Middleware-based token verification
-- Protected route authorization
-- Environment-based secret configuration
+- Role-based authorization middleware
+- Field filtering to prevent privilege escalation
+- Secure password update flow
 - Stateless authentication architecture
+- Environment-based secret configuration
 
 ---
 
-## 🧠 Architecture Overview
+# 🧠 Architecture Overview
 
 - MVC folder structure
 - Stateless JWT authentication
+- Role-Based Access Control (RBAC)
 - Middleware-based request interception
 - MongoDB document modeling using Mongoose
-- Production-ready environment variable management
+- Utility-based token generation
+- Production-ready environment management
 
 ---
 
-## 📚 What I Learned
+# 📚 What I Learned
 
-- Building secure authentication systems  
-- JWT lifecycle and token verification  
-- Password hashing best practices  
-- Middleware design pattern in Express  
-- MongoDB Atlas integration  
-- Production deployment workflow (GitHub → Render)  
+- Designing secure authentication systems
+- Implementing Role-Based Access Control (RBAC)
+- JWT lifecycle management
+- Secure password handling best practices
+- Middleware design patterns in Express
+- MongoDB schema modeling
+- Production deployment workflow (GitHub → Render)
+- Handling Git merge conflicts professionally
 
 ---
 
-## 🚀 Future Improvements
+# 🚀 Future Improvements
 
-- Role-based authorization (Admin/User)
+- Forgot password (email-based reset system)
 - Refresh token implementation
-- Password reset functionality
+- Token invalidation after password change
 - API rate limiting
 - Logging & monitoring integration
 - Unit & integration testing
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 **Amritesh Raj**
 
@@ -234,6 +290,6 @@ https://github.com/Amritesh123-jpg
 
 ---
 
-## 📜 License
+# 📜 License
 
 This project is licensed under the MIT License.
