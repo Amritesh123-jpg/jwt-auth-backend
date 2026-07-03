@@ -1,0 +1,30 @@
+backend/
+│
+├── config/
+│   └── db.js
+│
+├── controllers/
+│   ├── authController.js
+│   └── urlController.js
+│
+├── middleware/
+│   ├── authMiddleware.js
+│   ├── errorMiddleware.js
+│   └── asyncHandler.js (optional)
+│
+├── models/
+│   ├── User.js
+│   └── Url.js
+│
+├── routes/
+│   ├── authRoutes.js
+│   └── urlRoutes.js
+│
+├── utils/
+│   ├── generateToken.js
+│   └── generateShortCode.js
+│
+├── .env
+├── package.json
+├── app.js
+└── server.js

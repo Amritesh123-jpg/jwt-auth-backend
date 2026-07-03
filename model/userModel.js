@@ -1,112 +1,101 @@
-console.log('✅ userModel loaded');
+console.log("✅ userModel loaded");
 
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const validator = require('validator');
-//const { default: isEmail } = require('validator/lib/isEmail');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const validator = require("validator");
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-     required: [true, 'User must have a name']
+    required: [true, "User must have a name"],
   },
 
   email: {
     type: String,
-    required: [true, 'User must have an email'],
-    validate:[validator.isEmail,'Please provide valid email! 😐'],
+    required: [true, "User must have an email"],
     unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    validate: [validator.isEmail, "Please provide valid email! 😐"],
   },
-  
 
   password: {
     type: String,
-    required: [true, 'User must have a password'],
+    required: [true, "User must have a password"],
     minlength: 8,
-    select: false
+    select: false,
   },
 
   passwordConfirm: {
     type: String,
-    required: [true, 'Please confirm your password'],
+    required: [true, "Please confirm your password"],
     validate: {
       validator: function (el) {
         return el === this.password;
       },
-      message: 'Passwords are not the same'
-    }
+      message: "Passwords are not the same",
+    },
   },
-  role: {
-  type: String,
-  enum: ["user", "admin"],
-  default: "user"
-},
-passwordChangedAt: Date,
 
-active:{
-  type:Boolean,
-  default:true,
-  select:false
-}
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+
+  passwordChangedAt: Date,
+
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
+/// Hash Password
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-// 🔐 HASH PASSWORD + REMOVE passwordConfirm (SINGLE middleware)
-
-// userSchema.pre('save', async function () {
-//   if (!this.isModified('password')) return;
-
-//   // hash password
-//   this.password = await bcrypt.hash(this.password, 12);
-
-//   // remove confirm field
-//   this.passwordConfirm = undefined;
-// });
-
-// Hash password///////////////////
-userSchema.pre('save', async function () {
-  /// this password are new or update then it give false else true 
-  if(!this.isModified('password')) return;
-
-  // here password are hash with 12 time roation
-  this.password = await bcrypt.hash(this.password,12);
-  //we undefined here becoz in res we can not want to send passwordonfirm to the user 
+  this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
+});
+
+/// Update Password Changed Time
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return;
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+/// Query Middleware (Soft Delete)
+userSchema.pre(/^find/, function () {
+  this.find({ active: { $ne: false } });
   
 });
 
-// the time where password are change 
-userSchema.pre('save', async function(){
-  if(this.isModified('password') || this.isNew) return;
-  this.passwordChangeAt = Date.now() - 1000;
-});
+/// Compare Password
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
-/// query middleware-->
+/// Check if Password Changed After JWT Issued
+userSchema.methods.passwordChangedAfter = function (JWTTimeStamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
 
-userSchema.pre('/^find/', function(){
-      this.find({Acitve: {$ne: false}});
-});
-
-//// INSTANCE MIDDLEWARE 
-userSchema.methods.correctPassword = async function ( canidatePassword,userPassword){
-        return await bcrypt.compare(canidatePassword,userPassword);
-}
-
-//PasswordChangeAfter
-userSchema.methods.passwordChangeAfter = function(JWTTimeStamp) {
-  if(this.passwordChangedAt){
-    const changeTimeStamp = parseInt(
-      this.passwordChangedAt.getTime()/1000,
-      10,
-    )
-    return JWTTimeStamp<changeTimeStamp;
+    return JWTTimeStamp < changedTimeStamp;
   }
+
   return false;
+};
 
-}
+const User = mongoose.model("User", userSchema);
 
-
-
-const User = mongoose.model('User', userSchema);
 module.exports = User;

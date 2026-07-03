@@ -1,3 +1,4 @@
+const { promisify } = require("util");
 const User = require("../model/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -116,7 +117,7 @@ exports.protect = catchAsync(async (req,res,next) =>{
   let token;
 
   if(
-    req.headers.authorization && req.header.authorization.startsWith('Bearer')
+    req.headers.authorization && req.headers.authorization.startsWith('Bearer')
   ){
   token = req.headers.authorization.split(' ')[1];
   }
@@ -136,7 +137,7 @@ exports.protect = catchAsync(async (req,res,next) =>{
     return next(new AppError('The user belonging to this token no longer exists.',401));
   }
 
-  if(currentUser.passwordChangeAfter(decoded.iat)){
+  if(currentUser.passwordChangedAfter(decoded.iat)){
         return next(new AppError('User recently changed password. Please log in again.',401));
   }
     
@@ -157,5 +158,6 @@ exports.restrict = (...roles) =>{
         new AppError('You do not have permission to perform this action 🤚🤚',403)
       )
     }
+    next();
   }
 }

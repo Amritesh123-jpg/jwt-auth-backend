@@ -4,7 +4,7 @@ const route = express.Router();
 
 
 
-route.post('/signup',authController.signUp);
+route.post('/sign',authController.signUp);
 route.post('/login',authController.login);
 
 console.log("all ready");

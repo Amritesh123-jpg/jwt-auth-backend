@@ -1,5 +1,6 @@
 const User = require("../model/userModel");
 const bcrypt = require("bcryptjs");
+const catchAsync = require('../utils/catchAsync')
 //const jwt = require("jsonwebtoken");
 const signToken = require("../utils/signToken");
 
@@ -13,8 +14,8 @@ const filterObj = (obj, ...allowedFields) => {
 
 
 
-exports.getAllUsers = async (req, res) => {
-  try {
+exports.getAllUsers = catchAsync (async (req, res) => {
+   
     const users = await User.find({role: "user"}).select("-password");
 
     res.status(200).json({
@@ -25,13 +26,8 @@ exports.getAllUsers = async (req, res) => {
       }
     });
 
-  } catch (err) {
-    res.status(500).json({
-      status: "error",
-      message: err.message
-    });
-  }
-};
+  
+});
 
 exports.deleteUser = async (req, res) => {
   try {
