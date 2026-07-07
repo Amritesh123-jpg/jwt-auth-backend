@@ -1,0 +1,8 @@
+Agar tum internship target kar rahe ho to ye projects zyada strong rahenge:
+✅ URL Shortener (already bana rahe ho)
+✅ Authentication System (JWT + Refresh Token)
+✅ Rate Limiter
+✅ File Upload Service
+✅ Chat API (WebSocket)
+✅ API Gateway (advanced)
+✅ Job Queue System (BullMQ + Redis)

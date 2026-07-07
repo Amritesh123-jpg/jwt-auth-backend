@@ -33,10 +33,12 @@ const urlSchema = new mongoose.Schema(
     expiresAt: {
       type: Date,
       default: null // Set expiration to 30 days from creation}
-    },
-    timestamps: true
-  }
+    }
+     },
+     {
+      timestamps: true
+     }
 );
 
 const Url = mongoose.model("Url",urlSchema);
-model.exports = Url;
+module.exports = Url;

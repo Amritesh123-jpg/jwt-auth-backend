@@ -28,3 +28,222 @@ backend/
 ├── package.json
 ├── app.js
 └── server.js
+
+<----⬇️⬇️⬇️⬇️------->
+Sabse pehle urlModel.js
+✅ 1. URL Model
+Fields:
+
+originalUrl
+shortCode
+clicks
+user (ObjectId)
+expiresAt (optional)
+createdAt
+updatedAt
+
+✅ 2. urlController.js
+Functions:
+
+createShortUrl
+redirectUrl
+getMyUrls
+deleteUrl
+
+✅ 3. urlRoute.js
+Routes:
+
+POST    /url/shorten
+GET     /url/my-urls
+GET     /url/:shortCode
+DELETE  /url/:id
+
+✅ 4. Short Code Generator
+
+Ek utility function jo unique code generate kare.
+
+Example:
+
+aB8kP2
+Xz92Lm
+kL7nQa
+
+✅ 5. Redirect Logic
+
+Flow:
+
+GET /abc123
+      │
+      ▼
+Find shortCode
+      │
+      ▼
+clicks++
+      │
+      ▼
+Redirect to original URL
+
+Phase 6: Analytics
+✅ 6. Analytics
+
+Per URL:
+
+Total Clicks
+Created At
+Expires At
+
+Final Roadmap
+✔ Auth (Done)
+
+⬇
+
+1. urlModel.js
+2. urlController.js
+3. urlRoute.js
+4. generateShortCode.js
+5. Create Short URL API
+6. Redirect API
+7. Get My URLs API
+8. Delete URL API
+9. Analytics API
+
+⬇
+
+Frontend Integration
+
+Phase 1 (Almost Complete)
+✅ Auth
+✅ URL Shortener
+Phase 2
+⏳ Delete URL
+⏳ Edit Original URL
+⏳ URL Analytics (single URL details)
+⏳ Expiry Date support
+Phase 3
+⏳ Custom Alias (/golu instead of random code)
+⏳ QR Code Generation
+⏳ Pagination
+⏳ Search & Filter
+Phase 4 (Frontend)
+Dashboard
+Login/Register
+Create URL
+My URLs Table
+Analytics Page
+
+
+⏳ Advanced Features
+
+⏳ URL Analytics 👍
+
+⏳ Expiry Date 👍
+
+⏳ Custom Alias 👍
+
+🔲 QR Code Generation 👍
+🔲 Search My URLs 👍
+🔲 Pagination
+🔲 Sort by Clicks / Date👍
+ 
+⭐ Dashboard Statistics 👍
+⭐ Most Clicked URLs 👍
+⭐ Recent URLs 👍
+⭐ Bulk Delete 👍
+⭐ Restore Expired URL
+
+🔜Restore Expired URL 👍
+
+1️⃣ Download QR as PNG ⭐⭐⭐⭐⭐  👍
+
+Time: 20–30 min
+
+User:
+
+GET /url/qr/:id
+
+hit karega aur browser me QR image download ho jayegi.
+
+Ye bahut professional feature hai.
+
+2️⃣ Advanced Analytics ⭐⭐⭐⭐⭐
+
+Abhi sirf total clicks hain.
+
+Isko improve karte hain:
+
+Today's Clicks
+
+Last 7 Days Clicks
+
+Last 30 Days Clicks
+
+Click History
+
+Most Visited URL
+
+Ye dashboard ko next level bana dega.
+
+3️⃣ Public Analytics ⭐⭐⭐⭐
+
+Shareable analytics page.
+
+Example:
+
+/analytics/google
+
+Owner login ki zarurat nahi.
+
+4️⃣ Expiry Duration Customization ⭐⭐⭐⭐
+
+User choose kare:
+
+5 minutes
+
+1 hour
+
+1 day
+
+7 days
+
+Never Expire
+
+Abhi hardcoded hai.
+
+5️⃣ Duplicate URL Detection ⭐⭐⭐⭐
+
+Agar same user same URL dubara shorten kare:
+
+Instead of
+
+Create New URL
+
+return
+
+Existing URL
+
+Ye industry me kaafi use hota hai.
+
+6️⃣ URL Tags ⭐⭐⭐
+
+Example
+
+Learning
+
+College
+
+Work
+
+Personal
+
+Search aur filter aur better ho jayega.
+
+ ( Not completed )
+🔲 Rate Limiting 
+✅ Helmet
+✅ Rate Limiting
+✅ Mongo Sanitize
+✅ XSS Clean
+✅ CORS
+✅ HPP
+✅ Compression
+
